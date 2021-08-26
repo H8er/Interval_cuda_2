@@ -1,0 +1,21 @@
+#! /bin/bash
+res="$(nvcc 1.cu -o in.out 2>&1)"
+ if [[ ${#res} > 0 ]]
+ then
+ 	echo $res
+ else
+ 	rm in_gpu.txt
+ 	./in.out > in_gpu.txt
+  echo "DONE"
+ 	f_size_gpu=`du -k in_gpu.txt | cut -f1`
+ 		if [[ $f_size_gpu = 0 ]]
+ 		then
+ 		   echo "Empty file, segfault"
+    else
+      echo "Number of objects"
+      lines_number=`wc -l in_gpu.txt | cut -f1 -d " "`
+      let "lines_number = lines_number - 2"
+      echo $lines_number
+      tail in_gpu.txt -n 2
+ 		fi
+fi
